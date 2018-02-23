@@ -1,2 +1,2 @@
-# Janus Particle Control MATLAB Simulation
+# Janus Particle Control Simulation
 Code and algorithms for Steering Catalytic Janus Particles
