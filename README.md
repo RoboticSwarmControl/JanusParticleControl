@@ -1,7 +1,13 @@
 # Janus Particle Control Simulation
 Code and algorithms for Steering Catalytic Janus Particles
 ### MATLAB Code
--[`Openloop control Janus spheres using linear programming`](./src/)
+-[`Open-loop control Janus spheres using linear programming`](./src/OpenloopControlwithLP.m)
+-[`Closed-loop control using random rotation matrices`](./src/RandomRotation)
+-[`Closed-loop control using linear programming`](./src/ClosedloopLP.m)
+-[`Closed-loop control using greedy optimal control`](./src/GreedyOptimalControl.m)
+-[`Control four spheres to meet`](./src/FourSpheresControl.m)
+-[`Control 9 spheres up to 9 DOF `](./src/NineDoF.m)
+-[`Steer 10 spheres closer to each other`](./src/TenSpheresControl.m)
 
 
 ### Demo
