@@ -1,12 +1,12 @@
 # Janus Particle Control Simulation
 Code and algorithms for Steering Catalytic Janus Particles
 
-####Abstract
+#### Abstract
 
 A catalytic Janus particle is a two-faced particle with one face that reacts with the surrounding medium to produce thrust. By using a permanent magnet core, the particle can be steered. Unlike many current microrobots that are steered and propelled by an external magnetic field, these particles have independent steering and propulsion mechanisms. Janus particles can be manufactured in large numbers. An offset angle between their thrust and magnetization vectors can provide kinematic heterogeneity in a uniform magnetic field, which is the key for controlling multiple microrobots. In the 2D case, only two degrees-of-freedom (DOF) are controllable. We review controllability results in 2D, and then show that interesting things happen in 3D. We provide control laws for steering up to nine DOF, which can be mapped in various ways, including
 to control the x; y; z position of three particles, make four particles meet, or reduce the spread of n particles. A hardware implementation is described.
 
-####MATLAB Simulation Code
+#### MATLAB Simulation Code
 
 - [`Open-loop control Janus spheres using linear programming`](./src/OpenloopControlwithLP.m) 
 - [`Closed-loop control using random rotation matrices`](./src/RandomRotation)
@@ -17,7 +17,7 @@ to control the x; y; z position of three particles, make four particles meet, or
 - [`Steer 10 spheres closer to each other`](./src/TenSpheresControl.m)
 
 
-####Demo
+#### Demo
 
 Janus sphere simulations of open-loop control using linear programming. 
 The goal locations are indicated by green orbits. 
