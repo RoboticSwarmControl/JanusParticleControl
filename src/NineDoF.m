@@ -1,4 +1,9 @@
-% Steering 9 Janus spheres with greedy optimal control
+% Authors: Li Huang and Aaron T. Becker
+% Email: lhuang21@uh.edu
+% All rights reserved
+%=======================================
+% Steering 9 Janus spheres with greedy optimal control 
+% We can control up to 9 DOF -- steering 3 groups of 3 Janus particles to x =0, y=0 or z = 0 plane repectively. 
 function NineDoF(n)
 clc
 if nargin < 1
@@ -76,9 +81,9 @@ R3 = [0,0,0;0,0,0;1,1,1];
 errors = ones(numSteps,1)*NaN;      % Sum of squared distance to goals
 
 % Greedy optimal control mode switch
-% mode = 2: Rt(k) = R(k-1)*Rx(a)*Ry(b)
-% mode = 3: Rt(k) = R(k-1)*Rx(a)*Ry(b)*Rx(c)
-mode = 3;                           
+% mode = 2;  Rt(k) = R(k-1)*Rx(a)*Ry(b)
+ mode = 3;  % Rt(k) = R(k-1)*Rx(a)*Ry(b)*Rx(c)
+                         
 
 % Plot error
 figure(2)

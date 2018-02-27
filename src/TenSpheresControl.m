@@ -1,4 +1,8 @@
-% Steering 10 Janus spheres with greedy optimal control
+% Authors: Li Huang and Aaron T. Becker
+% Email: lhuang21@uh.edu
+% All rights reserved
+%=======================================
+% Steering 10 Janus spheres closer to each other with greedy optimal control
 function TenSpheresControl(n)
 clc
 if nargin < 1
@@ -6,13 +10,9 @@ if nargin < 1
    n = 10;
 end
 
-%% Select the control problem: we can either let 4 spheres converge to their mean position 
-cf = 0.*ones(10,1);    % cf = 0.25*ones(4,1): mu = mean position of x;
-%% Or let 3 spheres chasing the 4th sphere till they converge.
-% cf = [0;0;0;1]: mu = x4
+cf = 0.1*ones(10,1);    
                        
 format compact
-% rng(229)
 
 %% Initialization
 %<<<<<<<<<<<< Variables Init>>>>>>>>>>>>>
@@ -95,7 +95,7 @@ t_step = 0.0.*ones(numSteps,1);     % time step
 figure(1)
 %  While sum squared distance error is larger than a treshold
 while((sum(Vt(:))>1))
-
+    % mu = x*cf = mean position of x;
     mu = x*cf;
     for ii = 1:n    
         x_goal(:,ii) = mu;

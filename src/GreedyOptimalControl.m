@@ -1,8 +1,8 @@
-% This code simulates n magnetically steered spheres with catalytic Janus caps.
-% The goal is to use a linear program to find the shortest path.
-%  The paths consists of alternately revolving the magnetic field around
-%  the current x and y axes, then allowing the Janus particles to self
-%  propel a distance, then repeating.
+% Authors: Li Huang and Aaron T. Becker
+% Email: lhuang21@uh.edu
+% All rights reserved
+%=======================================
+% Closed-loop control of n Janus particles with greedy optimal control
 function GreedyOptimalControl(n)
 clc
 if nargin < 1
@@ -11,11 +11,6 @@ if nargin < 1
 end
 
 format compact
-%  rng(74)
-
-%  rng(15)
-%  rng(18)
-rng(78)
 
 %% Initialization
 %<<<<<<<<<<<< Variables Init>>>>>>>>>>>>>

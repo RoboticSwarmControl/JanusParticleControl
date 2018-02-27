@@ -1,8 +1,8 @@
-% This code simulates n magnetically steered spheres with catalytic Janus caps.
-% The goal is to use a linear program to find the shortest path.
-%  The paths consists of alternately revolving the magnetic field around
-%  the current x and y axes, then allowing the Janus particles to self
-%  propel a distance, then repeating.
+% Authors: Li Huang and Aaron T. Becker
+% Email: lhuang21@uh.edu
+% All rights reserved
+%=======================================
+% Closed-loop control of n Janus particles with linear programming
 function ClosedloopLP(n)
 clc
 if nargin < 1
@@ -17,9 +17,7 @@ end
 
 
 format compact
-% rng(15)
-% rng(18)
-rng(78)
+
 %% Initialization
 %<<<<<<<<<<<< Variables Init>>>>>>>>>>>>>
 % Initialize Janus particle positions  
@@ -108,8 +106,6 @@ sx = sx/sf;sy=sy/sf;sz=sz/sf;
 % Draw the sphere magnetic orientation (blue) and thrust orientation
 % (green)
 sphereHandler = ones(n,1);      % handles to spheres
-magneticHandler = ones(n,1);    % handles to magnet vectors
-thrustHandler = ones(n,1);      % handles to thrust vectors
 trajHandler = ones(n,1);        % handles to paths
 colors  = hsv(n);               % unique color for each sphere
 
@@ -167,8 +163,6 @@ while(sum(Vt(:))>0.1)
     % V(t+t_opt) = V(t)+Vdot(t)*t_opt.
     % Find the optimal rotation matrix s.t. the magnitude of V_dot*topt is
     % maximized
-    % rot_axis = 0 -> perform rotation about current magnetic x-axis
-    % rot_axis = 1 -> perform rotation about current magnetic y-axis
 
     for k = 1:length(tef)
         err_sum =trace((x_goal-x)'*(-rotm(:,:,k)*thrustV));            

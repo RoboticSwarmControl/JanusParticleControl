@@ -1,4 +1,8 @@
-
+% Authors: Li Huang and Aaron T. Becker
+% Email: lhuang21@uh.edu
+% All rights reserved
+%=======================================
+% Closed-loop control with randomly generalized rotation matrices
 function RandomRotation(n)
 clc
 if nargin < 1

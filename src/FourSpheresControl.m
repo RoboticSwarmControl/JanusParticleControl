@@ -1,4 +1,8 @@
-% Steering 4 Janus spheres with greedy optimal control
+% Authors: Li Huang and Aaron T. Becker
+% Email: lhuang21@uh.edu
+% All rights reserved
+%=======================================
+% Steering 4 Janus spheres to collide with greedy optimal control
 function FourSpheresControl(n)
 clc
 if nargin < 1
@@ -7,9 +11,9 @@ if nargin < 1
 end
 
 %% Select the control problem: we can either let 4 spheres converge to their mean position 
-% cf = 0.25*ones(4,1);    % cf = 0.25*ones(4,1): mu = mean position of x;
+cf = 0.25*ones(4,1);    % cf = 0.25*ones(4,1): mu = mean position of x;
 %% Or let 3 spheres chasing the 4th sphere till they converge.
-cf = [0;0;0;1]; %mu = x4
+% cf = [0;0;0;1]; %mu = x4
                        
 format compact
 rng(229)
@@ -42,21 +46,21 @@ for i = 1:n
    thrustV(:,i) = thrustV(:,i)./norm(thrustV(:,i));
 end
 
-% % Rv = [thrustV(:,2)'-thrustV(:,1)',zeros(1,6);...
-% % zeros(1,3),thrustV(:,2)'-thrustV(:,1)',zeros(1,3);...
-% % zeros(1,6),thrustV(:,2)'-thrustV(:,1)';...
-% % thrustV(:,3)'-thrustV(:,2)',zeros(1,6);...
-% % zeros(1,3),thrustV(:,3)'-thrustV(:,2)',zeros(1,3);...
-% % zeros(1,6),thrustV(:,3)'-thrustV(:,2)';...
-% % thrustV(:,4)'-thrustV(:,3)',zeros(1,6);...
-% % zeros(1,3),thrustV(:,4)'-thrustV(:,3)',zeros(1,3);...
-% % zeros(1,6),thrustV(:,4)'-thrustV(:,3)'];
-% % R_ = Rv\[x_init(:,1)-x_init(:,2);x_init(:,2)-x_init(:,3);x_init(:,3)-x_init(:,4)];
-% % Rt = [R_(1:3)';R_(4:6)';R_(7:9)'];
-% % disp('Sum of rot matrices:')
-% % disp(Rt)
-% % disp('Convergence point:')
-% % disp(x_init+Rt*thrustV)
+% Calculate the collision spot
+Rv = [thrustV(:,2)'-thrustV(:,1)',zeros(1,6);...
+zeros(1,3),thrustV(:,2)'-thrustV(:,1)',zeros(1,3);...
+zeros(1,6),thrustV(:,2)'-thrustV(:,1)';...
+thrustV(:,3)'-thrustV(:,2)',zeros(1,6);...
+zeros(1,3),thrustV(:,3)'-thrustV(:,2)',zeros(1,3);...
+zeros(1,6),thrustV(:,3)'-thrustV(:,2)';...
+thrustV(:,4)'-thrustV(:,3)',zeros(1,6);...
+zeros(1,3),thrustV(:,4)'-thrustV(:,3)',zeros(1,3);...
+zeros(1,6),thrustV(:,4)'-thrustV(:,3)'];
+R_ = Rv\[x_init(:,1)-x_init(:,2);x_init(:,2)-x_init(:,3);x_init(:,3)-x_init(:,4)];
+Rt = [R_(1:3)';R_(4:6)';R_(7:9)'];
+collision_spot = x_init+Rt*thrustV;
+fprintf('The unique collision spot is \n [x,y,z] = [%.03f, %.03f, %.03f]\n', collision_spot(1,1),collision_spot(2,1),collision_spot(3,1))
+
 
 %<<<<<<<<<<<< Graph Init>>>>>>>>>>>>>
 % Draw  the Janus spheres
@@ -108,7 +112,7 @@ zlabel('z-axis')
 set(gca,'FontSize',20);
 
 %  While sum squared distance error is larger than a treshold
-while((sum(Vt(:))>.1))
+while((sum(Vt(:))>.01))
 
     mu = x*cf;
     for ii = 1:n    
@@ -179,7 +183,9 @@ while((sum(Vt(:))>.1))
         drawnow
         
 end
-disp(x)
+
+collision_spot = mean(x,2);
+fprintf('Actual collision spot when error<0.01 where \n [x,y,z] = [%.03f, %.03f, %.03f]\n', collision_spot(1),collision_spot(2),collision_spot(3))
 
 
 function R = Rx(a)

@@ -1,9 +1,13 @@
+% Authors: Li Huang and Aaron T. Becker
+% Email: lhuang21@uh.edu
+% All rights reserved
+%=======================================
 % This code simulates n magnetically steered spheres with catalytic Janus caps.
 % The goal is to use a linear program to find the shortest path.
-%  The paths consists of alternately revolving the magnetic field around
-%  the current x and y axes, then allowing the Janus particles to self
-%  propel a distance, then repeating.
-function JanusOpenloopControlwithLP(n)
+% The paths consists of alternately revolving the magnetic field around
+% the current x and y axes, then allowing the Janus particles to self
+% propel a distance, then repeating.
+function OpenloopControlwithLP(n)
 clc
 if nargin < 1
 % Set default number of Janus spheres 
@@ -11,10 +15,8 @@ if nargin < 1
 end
 
 format compact
-% rng(15)
-% rng(18)
-% rng(15)
-rng(78)
+
+
 %% Initialization
 %<<<<<<<<<<<< Variables Init>>>>>>>>>>>>>
 % Initialize Janus particle positions  
@@ -39,9 +41,8 @@ for i = 1:n
 end
 
 % Generate random rotation matrices
-N = 5001;
-Nk = 101;
-f = ones(1,Nk);
+N = 201;
+f = ones(1,N);
 % rotation matrices
 revs = zeros(3,3,N);
 revs(:,:,1) = eye(3);
@@ -70,9 +71,9 @@ end
 % => beq = [x_goal-x_init]
 % => Aeq*t = beq.
 
-Aeq = zeros(3*n,Nk);  % N rotation matrices candidates by 3 DOF of the robots
+Aeq = zeros(3*n,N);  % N rotation matrices candidates by 3 DOF of the robots
 
-for i = 1:Nk
+for i = 1:N
     newThrustOrients = revs(:,:,i)*thrustV;         % newThrustOrients = Ri*vi
     Aeq(:,i) = newThrustOrients(:);
 end
@@ -83,7 +84,7 @@ beq = x_goal(:)-x_init(:);  % Location difference b/w the goals and the init pos
 % Minimize the total time t from initial positions to goals given N rotation
 % matrices, where t gives the actuation time of the thrust vector after each rotation,
 % fval is the total time, and exitflag denotes if there exits a solution.
-[t, fval, exitflag] = linprog(f,[],[],Aeq,beq,zeros(1,Nk),Inf*ones(1,Nk));
+[t, fval, exitflag] = linprog(f,[],[],Aeq,beq,zeros(1,N),Inf*ones(1,N));
 fprintf('Minimum time for the linear programming:%.02f\n',fval);
 display(exitflag)
 
@@ -104,8 +105,6 @@ sx = sx/sf;sy=sy/sf;sz=sz/sf;
 % Draw the sphere magnetic orientation (blue) and thrust orientation
 % (green)
 sphereHandler = ones(n,1);      % handles to spheres
-magneticHandler = ones(n,1);    % handles to magnet vectors
-thrustHandler = ones(n,1);      % handles to thrust vectors
 trajHandler = ones(n,1);        % handles to paths
 colors  = hsv(n);               % unique color for each sphere
 
@@ -130,8 +129,7 @@ end
 
 
 %% Open-loop control
-x = x_init;                         % Current states (Janus sphere position)
-
+x = x_init;         % Current states (Janus sphere position)
 
 errors = ones(5000,1)*NaN;
 errors(1) = norm(x_goal(:)-x(:))^2; 
@@ -142,28 +140,26 @@ xlabel('Time')
 ylabel('Sum Squared Distance')
 set(gca,'FontSize',20);
 
-
 figure(1)
 xlabel('x-axis')
 ylabel('y-axis')
 zlabel('z-axis')
 set(gca,'FontSize',20);
-cnt = 1;
+idx = 1;
 for ii = 1:length(tef)
     Rt = rotm(:,:,ii); 
     % All Janus spheres move one step
-    dt = 0;
-    while dt<tef(ii)
-       
-        x = x + min(1,tef(ii)-dt).*Rt*thrustV;
-        errors(cnt) = norm(x_goal(:)-x(:))^2; 
-        t_step(cnt+1) =  t_step(cnt)+ min(1,tef(ii)-dt);
-        cnt = cnt + 1;
-        dt = dt + min(1,tef(ii)-dt);
+    
+    while tef(ii)>0
+        dt = min(0.5,tef(ii));
+        tef(ii) = tef(ii) - dt;
+        x = x + dt.*Rt*thrustV;
+        errors(idx) = norm(x_goal(:)-x(:))^2; 
+        t_step(idx+1) =  t_step(idx)+ dt;
+        idx = idx + 1;
         for j = 1:n
             % Update the position of each sphere
             set( sphereHandler(j), 'XData', sx+x(1,j),'YData',sy+x(2,j),'ZData',sz+x(3,j));
-
             %update the path of each sphere
             xp= get(trajHandler(j),'XData');
             yp= get(trajHandler(j),'YData');
@@ -171,12 +167,9 @@ for ii = 1:length(tef)
             set(trajHandler(j),'XData',[xp,x(1,j)],'YData',[yp,x(2,j)],'ZData',[zp,x(3,j)],'LineWidth',2);
         end
         set(errHandler,'Ydata',errors, 'Xdata',t_step, 'LineWidth', 2);
-
         drawnow
     end
     
-
-
 end
 
 
@@ -185,7 +178,4 @@ R = [1, 0, 0; 0, cos(a), -sin(a); 0, sin(a), cos(a)];
 
 function R = Ry(b)
 R = [cos(b), 0, sin(b); 0, 1, 0; -sin(b), 0, cos(b)];
-
-
-
 
